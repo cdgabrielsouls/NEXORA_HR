@@ -4,19 +4,38 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Employee Onboarding</title>
+
+<!-- Google Font: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  }
+</script>
 </head>
 
  @include('partials.navbar')
 <body class="bg-[#1B3A6B] min-h-screen font-sans">
+    
+<h1 class="text-white pt-[20px] pl-[100px] text-[28px] font-bold tracking-wide mb-8 text-left">EMPLOYEE ONBOARDING</h1>
 
-  <div class="pt-[140px]">
+  <div class="pt-[24px]">
     <!-- Employee Onboarding Content -->
 
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
 
    <!-- Title -->
-    <h1 class="text-white text-xl font-bold tracking-wide mb-8">EMPLOYEE ONBOARDING</h1>
+
     @include('partials.onboarding-stepper', ['currentStep' => 2])
 
 <div class="flex flex-col lg:flex-row gap-12">
@@ -36,7 +55,7 @@
 @endif
 
 <form 
- action="{{ route('hr.onboarding.storeStep2') }}"
+ action="{{ route('onboarding.storeStep2') }}"
     method="POST"
     class="space-y-6 max-w-3xl" >
 
@@ -51,7 +70,7 @@
         <label class="block text-slate-300 text-xs mb-1">
             Department <span class="text-red-500">*</span>
         </label>
-        <select id="department" name="department" required class="w-[350px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
+        <select id="department" name="department" required class="w-[630px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
             <option value="">Select Department</option>
             <option>Business Intelligence</option>
             <option>E-commerce</option>
@@ -70,7 +89,7 @@
         <label class="block text-slate-300 text-xs mb-1">
             Position <span class="text-red-500">*</span>
         </label>
-        <select id="position" name="position" required class="w-[350px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
+        <select id="position" name="position" required class="w-[630px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
             <option value="">Select Department First</option>
         </select>
     </div>
@@ -90,13 +109,10 @@
             type="date"
             required
             value="{{ old('hire_date', session('step2.hire_date')) }}"
-            class="w-[350px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
     </div>
 
-</div>
-
-<div class="flex gap-6">
     <div>
         <label class="block text-slate-300 text-xs mb-1">
             Start Time <span class="text-red-500">*</span>
@@ -106,7 +122,7 @@
             type="time"
             required
             value="{{ old('start_time', session('step2.start_time')) }}"
-            class="w-[350px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
         <p class="mt-1 text-[10px] text-slate-400">HR assigned work start (basis for late check)</p>
     </div>
@@ -120,33 +136,40 @@
             type="time"
             required
             value="{{ old('end_time', session('step2.end_time')) }}"
-            class="w-[350px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
+            class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
-        <p class="mt-1 text-[10px] text-slate-400">Required work hours = End Time âˆ’ Start Time</p>
+        <p class="mt-1 text-[10px] text-slate-400">Required work hours = End Time − Start Time</p>
     </div>
+
+
 </div>
+
+
+    
 
     <!-- Navigation Buttons -->
 <div class="pt-6 flex gap-4">
 
     <!-- Back Button -->
-    <a href="{{ route('hr.onboarding.step1') }}"
-   class="inline-flex items-center gap-2 bg-slate-600 hover:bg-slate-700 text-white text-sm font-semibold px-6 py-2.5 rounded shadow transition">
+   <div class="pt-8">
+           <button
+    type="button"
+    onclick="window.location.href='{{ route('onboarding.step1') }}'"
+    class="w-[218px] h-[56px] border-0 border-[0.1px] border-[#dcdcdc54] rounded-md bg-[#C3326720] text-white text-[0.9375rem] font-normal tracking-[.3px] cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,.25)] transition-all duration-250 hover:bg-[#C3326740] hover:-translate-y-0.5 active:scale-[.97]"
+>
     BACK
-</a>
+</button>
+          </div>
 
-    <button
+   <div class="pt-8">
+           <button
     type="submit"
-    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded shadow-lg shadow-blue-900/40 transition">
+     class="w-[218px] h-[56px] border-0 border-[0.1px] border-[#dcdcdc54] rounded-md bg-[#0061FF20] text-white text-[0.9375rem] font-normal tracking-[.3px] cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,.25)] transition-all duration-250 hover:bg-[#0061FF30] hover:-translate-y-0.5 active:scale-[.97]">
     NEXT
 
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9"/>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10 8l4 4-4 4"/>
-    </svg>
+  
 </button>
-
-</div>
+          </div>
 </form>
       </div>
 
@@ -163,16 +186,24 @@
 
 <script>
   const positionsByDepartment = {
-    "Business Intelligence": ["BI Manager", "BI Analyst", "Data Analyst", "Business Analyst"],
-    "E-commerce": ["E-commerce Manager", "Marketplace Specialist", "Product Listing Specialist", "Digital Merchandiser", "SEO Specialist"],
-    "Finance": ["Finance Manager", "Accountant", "Financial Analyst"],
-    "Human Resources": ["HR Manager", "HR Officer", "Recruiter", "HR Assistant"],
-    "IT Service Management": ["IT Manager", "System Administrator", "Network Administrator", "IT Support Specialist", "Software Developer"],
-    "Inventory Management": ["Inventory Manager", "Inventory Controller", "Warehouse Staff", "Inventory Analyst"],
-    "Order Management": ["Shipping Coordinator", "Returns Specialist", "Customer Service Representative"],
-    "Procurement Management": ["Procurement Manager", "Purchasing Officer", "Vendor Coordinator"],
-    "Production Management": ["Production Manager", "Production Supervisor", "Production Planner", "Production Staff"]
-  };
+    "Business Intelligence": ["BI Manager", "BI Staff"],
+
+    "E-commerce": ["E-commerce Manager", "E-commerce Staff"],
+
+    "Finance": ["Finance Manager", "Finance Staff"],
+
+    "Human Resources": ["Human Resources Manager", "Human Resources Staff"],
+
+    "IT Service Management": ["IT Service Manager", "IT Service Staff"],
+
+    "Inventory Management": ["Inventory Manager", "Inventory Staff"],
+
+    "Order Management": ["Order Manager", "Order Staff"],
+
+    "Procurement Management": ["Procurement Manager", "Procurement Staff"],
+
+    "Production Management": ["Production Manager", "Production Staff"]
+};
 
   const departmentSelect = document.getElementById("department");
   const positionSelect = document.getElementById("position");
