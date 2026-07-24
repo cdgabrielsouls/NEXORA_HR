@@ -1,12 +1,10 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\HR\Models\Employee;
+use App\Models\Employee;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class EmployeeOnboardingController extends Controller
 {
@@ -27,17 +25,11 @@ class EmployeeOnboardingController extends Controller
 
     public function storeStep1(Request $request)
 {
-    $clientId = (int) session('employee_client_id');
-    abort_unless($clientId > 0, 403, 'A client-scoped HR session is required to create an employee.');
 
     $request->validate([
         'first_name' => 'required',
         'last_name' => 'required',
-        'email' => [
-            'required',
-            'email',
-            Rule::unique('hr.employees', 'email')->where('client_id', $clientId),
-        ],
+        'email' => 'required|email|unique:employees,email',
         'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
@@ -52,13 +44,13 @@ class EmployeeOnboardingController extends Controller
 
     session(['step1' => $data]);
 
-    return redirect()->route('hr.onboarding.step2');
+    return redirect()->route('onboarding.step2');
 }
 
     public function step2()
     {
         if (! session('step1')) {
-            return redirect()->route('hr.onboarding.step1')
+            return redirect()->route('onboarding.step1')
                 ->with('error', 'Please complete step 1 first.');
         }
 
@@ -68,7 +60,7 @@ class EmployeeOnboardingController extends Controller
     public function storeStep2(Request $request)
     {
         if (! session('step1')) {
-            return redirect()->route('hr.onboarding.step1')
+            return redirect()->route('onboarding.step1')
                 ->with('error', 'Please complete step 1 first.');
         }
 
@@ -95,18 +87,18 @@ class EmployeeOnboardingController extends Controller
 
         session(['step2' => $validated]);
 
-        return redirect()->route('hr.onboarding.step3');
+        return redirect()->route('onboarding.step3');
     }
 
     public function step3()
     {
         if (! session('step1')) {
-            return redirect()->route('hr.onboarding.step1')
+            return redirect()->route('onboarding.step1')
                 ->with('error', 'Please complete step 1 first.');
         }
 
         if (! session('step2')) {
-            return redirect()->route('hr.onboarding.step2')
+            return redirect()->route('onboarding.step2')
                 ->with('error', 'Please complete step 2 first.');
         }
 
@@ -116,41 +108,49 @@ class EmployeeOnboardingController extends Controller
     public function storeStep3(Request $request)
     {
         if (! session('step1') || ! session('step2')) {
-            return redirect()->route('hr.onboarding.step1')
+            return redirect()->route('onboarding.step1')
                 ->with('error', 'Your onboarding session expired. Please start again.');
         }
 
         $request->validate([
-            'birth_certificate' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'curriculum_vitae' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
-            'valid_id' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ]);
+    'birth_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+    'curriculum_vitae' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+    'valid_id' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+]);
 
-        $data = [
-            'birth_certificate' => $request->file('birth_certificate')->store('documents', 'public'),
-            'curriculum_vitae' => $request->file('curriculum_vitae')->store('documents', 'public'),
-            'valid_id' => $request->file('valid_id')->store('documents', 'public'),
-        ];
+       $data = [
+    'birth_certificate' => $request->hasFile('birth_certificate')
+        ? $request->file('birth_certificate')->store('documents', 'public')
+        : null,
+
+    'curriculum_vitae' => $request->hasFile('curriculum_vitae')
+        ? $request->file('curriculum_vitae')->store('documents', 'public')
+        : null,
+
+    'valid_id' => $request->hasFile('valid_id')
+        ? $request->file('valid_id')->store('documents', 'public')
+        : null,
+];
 
         session(['step3' => $data]);
 
-        return redirect()->route('hr.onboarding.step4');
+        return redirect()->route('onboarding.step4');
     }
 
     public function step4()
     {
         if (! session('step1')) {
-            return redirect()->route('hr.onboarding.step1')
+            return redirect()->route('onboarding.step1')
                 ->with('error', 'Please complete step 1 first.');
         }
 
         if (! session('step2')) {
-            return redirect()->route('hr.onboarding.step2')
+            return redirect()->route('onboarding.step2')
                 ->with('error', 'Please complete step 2 first.');
         }
 
         if (! session('step3')) {
-            return redirect()->route('hr.onboarding.step3')
+            return redirect()->route('onboarding.step3')
                 ->with('error', 'Please complete step 3 first.');
         }
 
@@ -163,40 +163,27 @@ class EmployeeOnboardingController extends Controller
         return view('employees.onboarding.step4', compact('companyEmailPreview'));
     }
 
-    public function storeStep4(Request $request)
-    {
-        $step1 = session('step1');
-        $step2 = session('step2');
-        $step3 = session('step3');
+   public function storeStep4(Request $request)
+{
+    $step1 = session('step1');
+    $step2 = session('step2');
+    $step3 = session('step3');
 
-        if (! $step1 || ! $step2 || ! $step3) {
-            return redirect()->route('hr.onboarding.step1')
-                ->with('error', 'Your onboarding session expired. Please start again.');
-        }
+    if (! $step1 || ! $step2 || ! $step3) {
+        return redirect()->route('onboarding.step1')
+            ->with('error', 'Your onboarding session expired. Please start again.');
+    }
 
-        $request->validate([
-            'policy_1' => 'accepted',
-            'policy_2' => 'accepted',
-            'policy_3' => 'accepted',
-            'policy_4' => 'accepted',
-            'policy_5' => 'accepted',
-            'policy_6' => 'accepted',
-        ]);
+    $request->validate([
+        'policy_agreement' => 'accepted',
+    ]);
 
-        $clientId = (int) session('employee_client_id');
-        abort_unless($clientId > 0, 403, 'A client-scoped HR session is required to create an employee.');
+    $companyEmail = self::generateUniqueCompanyEmail(
+        $step1['first_name'],
+        $step1['last_name']
+    );
+    $password = 'NEX-' . Str::upper(Str::random(6));
 
-        if (Employee::where('email', $step1['email'])->exists()) {
-            return redirect()->route('hr.onboarding.step1')
-                ->withErrors(['email' => 'An employee with this email already exists for your client.'])
-                ->withInput($step1);
-        }
-
-        $companyEmail = self::generateUniqueCompanyEmail(
-            $step1['first_name'],
-            $step1['last_name']
-        );
-        $plainPassword = 'NEX-' . Str::upper(Str::random(6));
 
     $employee = Employee::create([
         'first_name' => $step1['first_name'],
@@ -219,10 +206,7 @@ class EmployeeOnboardingController extends Controller
         'valid_id' => $step3['valid_id'] ?? null,
         'medical_certificate' => $step3['medical_certificate'] ?? null,
         'company_email' => $companyEmail,
-        'temporary_password' => Hash::make($plainPassword),
-        'must_change_password' => true,
-        'client_id' => $clientId,
-        'approval_status' => 'Pending',
+        'temporary_password' => $password,
     ]);
 
     // Ngayon meron na tayong auto-increment id, gamitin natin siya
@@ -230,12 +214,9 @@ class EmployeeOnboardingController extends Controller
     $employee->save();
 
     session()->forget(['step1', 'step2', 'step3']);
-    // Keep the one-time credential available only for the success screen;
-    // the HR database stores a hash and ITSM controls activation.
-    $employee->temporary_password = $plainPassword;
     session(['employee' => $employee]);
 
-    return redirect()->route('hr.onboarding.success');
+    return redirect()->route('onboarding.success');
 }
 
     public function success()
@@ -243,7 +224,7 @@ class EmployeeOnboardingController extends Controller
         $employee = session('employee');
 
         if (! $employee) {
-            return redirect()->route('hr.onboarding.step1');
+            return redirect()->route('onboarding.step1');
         }
 
         return view('employees.onboarding.success', compact('employee'));

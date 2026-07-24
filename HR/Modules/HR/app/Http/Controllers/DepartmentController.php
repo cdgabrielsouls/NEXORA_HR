@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Modules\HR\Http\Controllers\Concerns\ResolvesPerPage;
-use Modules\HR\Http\Controllers\Concerns\RespondsWithAjaxList;
-use Modules\HR\Models\Employee;
+use App\Http\Controllers\Concerns\ResolvesPerPage;
+use App\Http\Controllers\Concerns\RespondsWithAjaxList;
+use App\Models\Employee;
 use Illuminate\Http\Request;
-use Modules\HR\Models\Department;
+use App\Models\Department;
 
 class DepartmentController extends Controller
 {

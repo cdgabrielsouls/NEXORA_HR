@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Modules\HR\Models\Employee;
-use Modules\HR\Models\Attendance;
+use App\Models\Employee;
+use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $department = strtolower(trim(session('employee_department', '')));
 
         if ($role !== 'admin' && $department !== 'human resources') {
-            return redirect()->route('hr.employee.dashboard');
+            return redirect()->route('employee.dashboard');
         }
 
         $employeeCount = Employee::count();
@@ -83,12 +83,5 @@ class DashboardController extends Controller
         ));
     }
 
-    public function employeeIndex()
-    {
-        $employeeCount = Employee::count();
-        $isHr = session('employee_role') === 'admin'
-            || strtolower(trim(session('employee_department', ''))) === 'human resources';
-
-        return view('dashboard.employee-dashboard', compact('employeeCount', 'isHr'));
-    }
+    
 }

@@ -339,7 +339,7 @@
     <div class="main-wrapper" id="mainWrapper">
         
         <header class="header">
-            <a href="{{ route('login') }}" class="nexora-logo">
+            <a href="/signin" class="nexora-logo">
                 <img src="images/logo.png" alt="Nexora Logo">
             </a>
         </header>
@@ -360,18 +360,18 @@
                         </div>
                     @endif
                     
-                    <form method="POST" action="{{ url('/login') }}">
+                    <form method="POST" action="{{ route('signin.post') }}">
     @csrf
 
   
 
     <div class="input-group">
-        <label>Username / Email</label>
+        <label>Email</label>
        <input
     type="email"
-    name="username"
-    placeholder="Enter Username or Email"
-    value="{{ old('username') }}"
+    name="company_email"
+    placeholder="Enter Company Email"
+    value="{{ old('company_email') }}"
     class="{{ ($errors->any() || session('error')) ? 'input-error' : '' }}"
     required>
     </div>
@@ -419,7 +419,7 @@
 
     if (hasError) {
         // A failed login just reloaded this page (e.g. server redirected back
-        // with validation errors) â€” skip the splash intro entirely and show
+        // with validation errors) — skip the splash intro entirely and show
         // the form immediately with the warning message already in place.
         splash.style.display = "none";
         mainWrapper.classList.add("no-intro");

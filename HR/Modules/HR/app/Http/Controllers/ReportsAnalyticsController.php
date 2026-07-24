@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Modules\HR\Http\Controllers\Concerns\ResolvesPerPage;
-use Modules\HR\Http\Controllers\Concerns\RespondsWithAjaxList;
-use Modules\HR\Models\Attendance;
-use Modules\HR\Models\Employee;
+use App\Http\Controllers\Concerns\ResolvesPerPage;
+use App\Http\Controllers\Concerns\RespondsWithAjaxList;
+use App\Models\Attendance;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class ReportsAnalyticsController extends Controller
@@ -147,5 +147,7 @@ class ReportsAnalyticsController extends Controller
         }
 
         return view('reports-analytics.leave', compact('employees'));
+
+        
     }
 }

@@ -1,30 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\HR\Http\Controllers\DashboardController;
-use Modules\HR\Http\Controllers\EmployeeController;
-use Modules\HR\Http\Controllers\DepartmentController;
-use Modules\HR\Http\Controllers\AttendanceController;
-use Modules\HR\Http\Controllers\EmployeeOnboardingController;
-use Modules\HR\Http\Controllers\ReportsAnalyticsController;
-use Modules\HR\Models\Attendance;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EmployeeOnboardingController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReportsAnalyticsController;
+use App\Http\Controllers\EmployeeViewController;
+use App\Models\Employee;
 
 Route::get('/', function () {
-    return redirect()->route('hr.dashboard');
+    return redirect()->route('signin');
 });
 
-Route::middleware('hr.access')->group(function () {
+Route::get('/signin', function () {
+    return view('auth.signin');
+})->name('signin');
+
+Route::post('/signin', [AuthController::class, 'login'])
+    ->name('signin.post');
+
+Route::middleware('employee.auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::get('/employee-dashboard', [DashboardController::class, 'employeeIndex'])
+    Route::get('/employee-dashboard', [EmployeeViewController::class, 'employeeIndex'])
         ->name('employee.dashboard');
 
-    Route::post('/logout', function () {
-        session()->forget(['employee_logged_in', 'employee_role', 'employee_department', 'employee_id', 'employee_code']);
-
-        return redirect()->route('login');
-    })->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
@@ -65,7 +71,7 @@ Route::middleware('hr.access')->group(function () {
 
     Route::get('/attendance/today-count', function () {
         return response()->json([
-            'count' => Attendance::whereDate('attendance_date', today())
+            'count' => \App\Models\Attendance::whereDate('attendance_date', today())
                 ->whereNotNull('time_in')
                 ->whereNull('time_out')
                 ->count()
@@ -79,3 +85,9 @@ Route::get('/clockinout', function () {
 
 Route::post('/clock-in', [AttendanceController::class, 'clockIn'])
     ->name('clockinout.index');
+
+
+    // routes/web.php
+Route::get('/employee-profile', function () {
+    return view('employees.employee-profile');
+})->name('employee.profile');

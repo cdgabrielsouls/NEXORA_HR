@@ -45,8 +45,8 @@
     ====================================================== -->
     <div class="my-[30px] pt-10 pb-10 relative flex justify-center items-center">
 
-        <a href="{{ route('hr.employees.index') }}" class="absolute top-[1px] left-[120px] inline-flex items-center gap-2 py-[9px] px-[30px] bg-[#0061FF20] text-white no-underline rounded-xl text-base font-normal shadow-[0_8px_20px_rgba(0,0,0,.25)] transition-all duration-250 hover:bg-[#0063FF10] hover:-translate-y-0.5 active:scale-[.97]">
-            â† EMPLOYEE LIST
+        <a href="{{ route('employees.index') }}" class="absolute top-[1px] left-[120px] inline-flex items-center gap-2 py-[9px] px-[30px] bg-[#0061FF20] text-white no-underline rounded-xl text-base font-normal shadow-[0_8px_20px_rgba(0,0,0,.25)] transition-all duration-250 hover:bg-[#0063FF10] hover:-translate-y-0.5 active:scale-[.97]">
+            ← EMPLOYEE LIST
         </a>
 
         <div class="w-full max-w-[108.1875rem] min-h-[45.375rem] relative mt-5 flex justify-center items-center rounded-[18px] overflow-hidden bg-[#0B1E3D] pb-[90px]">
@@ -157,7 +157,7 @@
             <div class="absolute bottom-[25px] left-1/2 -translate-x-1/2 pb-10">
                 <button type="button" id="downloadBtn"
                     class="w-[218px] h-[61px] border-0 border-[0.1px] border-[#dcdcdc54] rounded-md bg-[#0061FF20] text-white text-[0.9375rem] font-normal tracking-[.3px] cursor-pointer shadow-[0_8px_20px_rgba(0,0,0,.25)] transition-all duration-250 hover:bg-[#0061FF10] hover:-translate-y-0.5 active:scale-[.97]">
-                    â†“ DOWNLOAD
+                    ↓ DOWNLOAD
                 </button>
             </div>
 
@@ -169,7 +169,7 @@
     ====================================================== -->
     <div class="w-full max-w-[108.1875rem] min-h-[45.375rem] ml-[90px] mr-10 mt-5 py-7 pr-2.5 pl-[60px] grid grid-cols-[68%_32%] gap-6 bg-[#122A58] rounded-[22px] shadow-[inset_5px_10px_18px_rgba(191,0,0,.03),inset_1px_0_1px_rgba(0,0,0,.20),0_18px_35px_rgba(0,0,0,.35)]">
 
-        <form action="{{ route('hr.employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data" class="contents">
+        <form action="{{ route('employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data" class="contents">
             @csrf
             @method('PUT')
 
@@ -183,23 +183,17 @@
 <div>
     <h3 class="text-[13px] font-normal text-[#D7E4FF] tracking-[.5px] mb-[7px] uppercase">PROFILE IMAGE</h3>
 
-    <label for="edit_profile_picture" class="cursor-pointer group inline-block">
-        <div class="relative w-[100px] h-[100px] rounded-full bg-[#7FB3FF] flex justify-center items-center overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,.35)]">
+    <div class="relative w-[100px] h-[100px] rounded-full bg-[#7FB3FF] flex justify-center items-center overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,.35)]">
 
-            <img id="editProfilePreview"
-                 src="{{ $employee->profile_picture ? asset('profile_pictures/'.$employee->profile_picture) : '' }}"
-                 alt="Profile"
-                 class="w-full h-full object-cover rounded-full {{ $employee->profile_picture ? '' : 'hidden' }}">
+    <img id="editProfilePreview"
+         src="{{ $employee->profile_picture ? asset('profile_pictures/'.$employee->profile_picture) : '' }}"
+         alt="Profile"
+         class="w-full h-full object-cover rounded-full {{ $employee->profile_picture ? '' : 'hidden' }}">
 
-            <i id="editProfilePlaceholder"
-               class="fa-solid fa-circle-user text-[120px] text-[#1C4176] {{ $employee->profile_picture ? 'hidden' : '' }}"></i>
+    <i id="editProfilePlaceholder"
+       class="fa-solid fa-circle-user text-[120px] text-[#1C4176] {{ $employee->profile_picture ? 'hidden' : '' }}"></i>
 
-            <!-- Hover overlay -->
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <span class="text-white text-[9px] font-semibold tracking-wide text-center px-2">CHANGE<br>PHOTO</span>
-            </div>
-        </div>
-    </label>
+</div>
 
     <input type="file"
            name="profile_picture"
@@ -389,7 +383,7 @@
                 </div>
 
                 <!-- RIGHT SIDE -->
-               <div class="flex flex-col gap-[15px] mt-[22%] w-[536px] -ml-[50%]">
+               <div class="flex flex-col gap-[15px] mt-[22%] w-[536px] -ml-[35%]">
 
                     <h3 class="text-[13px] font-light text-white uppercase whitespace-nowrap">Supporting Documents</h3>
 
@@ -468,7 +462,7 @@
 
                 </form>
 
-               <form action="{{ route('hr.employees.destroy', $employee->id) }}" method="POST" id="deleteForm">
+               <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" id="deleteForm">
     @csrf
     @method('DELETE')
 
@@ -532,15 +526,23 @@
     <script>
         // Positions available per department (kept in sync with the departments list above)
         const positionsByDepartment = {
-    "Business Intelligence": ["BI Manager", "BI Analyst", "Data Analyst", "Business Analyst"],
-    "E-commerce": ["E-commerce Manager", "Marketplace Specialist", "Product Listing Specialist", "Digital Merchandiser", "SEO Specialist"],
-    "Finance": ["Finance Manager", "Accountant", "Financial Analyst"],
-    "Human Resources": ["HR Manager", "HR Officer", "Recruiter", "HR Assistant"],
-    "IT Service Management": ["IT Manager", "System Administrator", "Network Administrator", "IT Support Specialist", "Software Developer"],
-    "Inventory Management": ["Inventory Manager", "Inventory Controller", "Warehouse Staff", "Inventory Analyst"],
-    "Order Management": ["Shipping Coordinator", "Returns Specialist", "Customer Service Representative"],
-    "Procurement Management": ["Procurement Manager", "Purchasing Officer", "Vendor Coordinator"],
-    "Production Management": ["Production Manager", "Production Supervisor", "Production Planner", "Production Staff"]
+    "Business Intelligence": ["BI Manager", "BI Staff"],
+
+    "E-commerce": ["E-commerce Manager", "E-commerce Staff"],
+
+    "Finance": ["Finance Manager", "Finance Staff"],
+
+    "Human Resources": ["Human Resources Manager", "Human Resources Staff"],
+
+    "IT Service Management": ["IT Service Manager", "IT Service Staff"],
+
+    "Inventory Management": ["Inventory Manager", "Inventory Staff"],
+
+    "Order Management": ["Order Manager", "Order Staff"],
+
+    "Procurement Management": ["Procurement Manager", "Procurement Staff"],
+
+    "Production Management": ["Production Manager", "Production Staff"]
 };
 
         const departmentSelect = document.getElementById("department");

@@ -1,7 +1,8 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
-abstract class Controller extends \Illuminate\Routing\Controller
+abstract class Controller
 {
+    
 }

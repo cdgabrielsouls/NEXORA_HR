@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\HR\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Modules\HR\Models\Attendance;
-use Modules\HR\Models\Employee;
+use App\Models\Attendance;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -13,28 +13,14 @@ class AttendanceController extends Controller
 {
     public function clockIn(Request $request)
     {
-        $validated = $request->validate([
-            // A bare exists rule would query the ITSM default database rather
-            // than the dedicated HR connection.
-            'employee_id' => 'required|string',
+        $request->validate([
+            'employee_id' => 'required|string|exists:employees,employee_id',
             'action' => 'nullable|in:clock_in,clock_out',
             'photo' => 'required|string',
         ]);
 
-        $employeeCode = trim($validated['employee_id']);
-        $employee = Employee::query()->where('employee_id', $employeeCode)->first();
-
-        // Sessions created before employee_code was stored may still prefill
-        // the HR primary key; preserve that existing attendance flow.
-        if (! $employee && ctype_digit($employeeCode)) {
-            $employee = Employee::query()->whereKey((int) $employeeCode)->first();
-        }
-
-        if (! $employee) {
-            return back()
-                ->withErrors(['employee_id' => 'The selected employee ID is invalid.'])
-                ->withInput(['employee_id' => $employeeCode]);
-        }
+        $employeeCode = $request->input('employee_id');
+        $employee = Employee::where('employee_id', $employeeCode)->first();
         $now = Carbon::now('Asia/Manila');
         $today = $now->toDateString();
         $action = $request->input('action', 'clock_in');
@@ -68,7 +54,7 @@ class AttendanceController extends Controller
             $attendance->time_out_image = $photoPath;
             $attendance->save();
 
-            return redirect()->route('hr.clockinout')
+            return redirect()->route('clockinout')
                 ->with('success', 'Clock out recorded for employee #' . $employeeCode)
                 ->with('employee_id', $employeeCode)
                 ->with('clock_in', $attendance->time_in)
@@ -88,7 +74,12 @@ class AttendanceController extends Controller
                 return back()->with('error', 'This employee already clocked out today.');
             }
 
-            return back()->with('error', 'This employee already clocked in today.');
+            return redirect()->route('clockinout')
+                ->with('error', 'This employee already clocked in today.')
+                ->with('employee_id', $employeeCode)
+                ->with('clocked_in', true)
+                ->with('clock_in', $attendance->time_in)
+                ->withInput(['employee_id' => $employeeCode]);
         }
 
         $attendance->time_in = $now->format('H:i:s');
@@ -96,7 +87,7 @@ class AttendanceController extends Controller
         $attendance->status = 'Present';
         $attendance->save();
 
-        return redirect()->route('hr.clockinout')
+        return redirect()->route('clockinout')
             ->with('success', 'Clock in recorded for employee #' . $employeeCode)
             ->with('employee_id', $employeeCode)
             ->with('clock_in', $attendance->time_in)
