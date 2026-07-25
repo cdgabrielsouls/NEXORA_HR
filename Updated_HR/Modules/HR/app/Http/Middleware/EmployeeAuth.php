@@ -22,10 +22,15 @@ class EmployeeAuth
         $role = session('employee_role');
         $department = strtolower(trim(session('employee_department', '')));
 
+        if ($role === 'admin' && ($request->routeIs('employee.leave') || $request->routeIs('employee.leave.submit'))) {
+            return redirect()->route('dashboard');
+        }
+
         if ($role === 'employee' && $department !== 'human resources') {
             if (! $request->routeIs('employee.dashboard')
                 && ! $request->routeIs('employee.attendance')
                 && ! $request->routeIs('employee.leave')
+                && ! $request->routeIs('employee.leave.submit')
                 && ! $request->routeIs('logout')) {
                 return redirect()->route('employee.dashboard');
             }

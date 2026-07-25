@@ -70,16 +70,19 @@
 
     <div class="w-[96.82%] max-w-[1859px] mx-auto">
 
-       
+        @php
+            $fullName = trim(($employee->first_name ?? '') . ' ' . ($employee->last_name ?? ''));
+            $email = $employee->company_email ?: ($employee->email ?? '—');
+            $hireDate = $employee->hire_date ? \Carbon\Carbon::parse($employee->hire_date)->format('M d, Y') : '—';
+        @endphp
 
         <!-- Section heading / actions -->
         <div class="w-full min-h-[60px] rounded-[14px] px-0 py-5 mb-2 flex items-center justify-between gap-4 flex-wrap">
             <div>
                 <h2 class="text-[18px] font-semibold text-white">DATE AND TIME RECORD</h2>
-                <p class="mt-1 text-[11.9px] text-[#93abd3]">Track your attendance and working hours through your recorded daily time entries.</p>
+                <p class="mt-1 text-[11.9px] text-[#93abd3]">Hello {{ $employee->first_name }}, here is your attendance history and time entry information.</p>
             </div>
             <div class="flex flex-wrap gap-2">
-             
                 <button class="rounded-full bg-[#0B1E3D] px-4 py-2 text-[11.9px] text-[#93abd3] border border-white/[0.05]">
                     <i class="fa-solid fa-file-export mr-1"></i> Export
                 </button>
@@ -125,50 +128,37 @@
                     <col style="width:16%">
                 </colgroup>
                 <tbody>
-                    <tr class="border-t border-white/[0.08] hover:bg-white/5">
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#E7F0FF]">2026-07-23</td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">08:45</td>
-                        <td class="px-[10px] py-[15px] text-center">
-                            <img src="/storage/attendance/in_2026-07-23.jpg" alt="Time in photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
-                        </td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">17:15</td>
-                        <td class="px-[10px] py-[15px] text-center">
-                            <img src="/storage/attendance/out_2026-07-23.jpg" alt="Time out photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
-                        </td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">8h 30m</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="status-badge present">Present</span></td>
-                    </tr>
-                    <tr class="border-t border-white/[0.08] hover:bg-white/5">
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#E7F0FF]">2026-07-22</td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">08:50</td>
-                        <td class="px-[10px] py-[15px] text-center">
-                            <img src="/storage/attendance/in_2026-07-22.jpg" alt="Time in photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
-                        </td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">17:10</td>
-                        <td class="px-[10px] py-[15px] text-center">
-                            <img src="/storage/attendance/out_2026-07-22.jpg" alt="Time out photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
-                        </td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">8h 20m</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="status-badge present">Present</span></td>
-                    </tr>
-                    <tr class="border-t border-white/[0.08] hover:bg-white/5">
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#E7F0FF]">2026-07-21</td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="attendance-thumb-placeholder mx-auto">&mdash;</span></td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="attendance-thumb-placeholder mx-auto">&mdash;</span></td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="status-badge absent">Absent</span></td>
-                    </tr>
-                    <tr class="border-t border-white/[0.08] hover:bg-white/5">
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#E7F0FF]">2026-07-20</td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="attendance-thumb-placeholder mx-auto">&mdash;</span></td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="attendance-thumb-placeholder mx-auto">&mdash;</span></td>
-                        <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">&mdash;</td>
-                        <td class="px-[10px] py-[15px] text-center"><span class="status-badge leave">Leave</span></td>
-                    </tr>
+                    @forelse ($attendances as $attendance)
+                        @php
+                            $status = $attendance->displayStatus();
+                            $statusClass = $status === 'Present' ? 'present' : ($attendance->status === 'Leave' ? 'leave' : 'absent');
+                        @endphp
+                        <tr class="border-t border-white/[0.08] hover:bg-white/5">
+                            <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#E7F0FF]">{{ $attendance->attendance_date }}</td>
+                            <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">{{ $attendance->formattedTimeIn() }}</td>
+                            <td class="px-[10px] py-[15px] text-center">
+                                @if ($attendance->timeInImageUrl())
+                                    <img src="{{ $attendance->timeInImageUrl() }}" alt="Time in photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
+                                @else
+                                    <span class="attendance-thumb-placeholder mx-auto">&mdash;</span>
+                                @endif
+                            </td>
+                            <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">{{ $attendance->formattedTimeOut() }}</td>
+                            <td class="px-[10px] py-[15px] text-center">
+                                @if ($attendance->timeOutImageUrl())
+                                    <img src="{{ $attendance->timeOutImageUrl() }}" alt="Time out photo" class="attendance-thumb mx-auto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'attendance-thumb-placeholder mx-auto',innerHTML:'<i class=\'fa-solid fa-image\'></i>'}))">
+                                @else
+                                    <span class="attendance-thumb-placeholder mx-auto">&mdash;</span>
+                                @endif
+                            </td>
+                            <td class="px-[10px] py-[15px] text-center text-[11.9px] text-[#93abd3]">{{ $attendance->formattedWorkHours() }}</td>
+                            <td class="px-[10px] py-[15px] text-center"><span class="status-badge {{ strtolower($statusClass) }}">{{ strtoupper($status) }}</span></td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-[10px] py-[15px] text-center text-[11.9px] text-[#b9c8e8]">No attendance records found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

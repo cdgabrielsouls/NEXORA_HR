@@ -9,6 +9,7 @@ use App\Http\Controllers\EmployeeOnboardingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportsAnalyticsController;
 use App\Http\Controllers\EmployeeViewController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Models\Employee;
 
 Route::get('/', function () {
@@ -29,13 +30,14 @@ Route::middleware('employee.auth')->group(function () {
     Route::get('/employee-dashboard', [EmployeeViewController::class, 'employeeIndex'])
         ->name('employee.dashboard');
 
-    Route::get('/employee-attendance', function () {
-        return view('reports-analytics.empAttendance');
-    })->name('employee.attendance');
+    Route::get('/employee-attendance', [ReportsAnalyticsController::class, 'selfAttendance'])
+        ->name('employee.attendance');
 
-    Route::get('/employee-leave', function () {
-        return view('reports-analytics.employee-leave');
-    })->name('employee.leave');
+    Route::get('/employee-leave', [LeaveRequestController::class, 'employeeLeave'])
+        ->name('employee.leave');
+
+    Route::post('/employee-leave', [LeaveRequestController::class, 'store'])
+        ->name('employee.leave.submit');
 
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
@@ -96,16 +98,32 @@ Route::post('/clock-in', [AttendanceController::class, 'clockIn'])
 
 
     // routes/web.php
-Route::get('/employee-profile', function () {
-    return view('employees.employee-profile');
-})->name('employee.profile');
+    Route::get('/employee-profile', function () {
+        $employeeId = session('employee_id');
+
+        if (! $employeeId) {
+            return redirect()->route('signin');
+        }
+
+        $employee = Employee::find($employeeId);
+
+        if (! $employee) {
+            return redirect()->route('signin');
+        }
+
+        return view('employees.employee-profile', compact('employee'));
+    })->name('employee.profile');
 
 use App\Http\Controllers\LeaveManagementController;
 
 Route::get('/leave-management', [LeaveManagementController::class, 'index'])
     ->name('leave-management.index');
 
-
-
-Route::get('/leave-requests', [LeaveManagementController::class, 'leaveRequests'])
+Route::get('/leave-requests', [LeaveRequestController::class, 'index'])
     ->name('leave-requests.index');
+
+Route::get('/leave-requests/{id}', [LeaveRequestController::class, 'show'])
+    ->name('leave-requests.show');
+
+Route::post('/leave-requests/{id}/review', [LeaveRequestController::class, 'review'])
+    ->name('leave-requests.review');

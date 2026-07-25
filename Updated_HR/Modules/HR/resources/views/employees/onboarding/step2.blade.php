@@ -47,10 +47,8 @@
 </h2>
 
 @if ($errors->any())
-    <div class="mb-4 rounded bg-red-500/20 border border-red-400 text-red-200 px-4 py-3 text-sm">
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
+    <div class="mb-4 rounded bg-amber-500/10 border border-amber-400/40 text-amber-100 px-4 py-3 text-sm">
+        Please review the highlighted fields below.
     </div>
 @endif
 
@@ -72,16 +70,19 @@
         </label>
         <select id="department" name="department" required class="w-[630px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
             <option value="">Select Department</option>
-            <option>Business Intelligence</option>
-            <option>E-commerce</option>
-            <option>Finance</option>
-            <option>Human Resources</option>
-            <option>IT Service Management</option>
-            <option>Inventory Management</option>
-            <option>Order Management</option>
-            <option>Procurement Management</option>
-            <option>Production Management</option>
+            <option value="Business Intelligence" {{ old('department', $step2['department'] ?? '') == 'Business Intelligence' ? 'selected' : '' }}>Business Intelligence</option>
+            <option value="E-commerce" {{ old('department', $step2['department'] ?? '') == 'E-commerce' ? 'selected' : '' }}>E-commerce</option>
+            <option value="Finance" {{ old('department', $step2['department'] ?? '') == 'Finance' ? 'selected' : '' }}>Finance</option>
+            <option value="Human Resources" {{ old('department', $step2['department'] ?? '') == 'Human Resources' ? 'selected' : '' }}>Human Resources</option>
+            <option value="IT Service Management" {{ old('department', $step2['department'] ?? '') == 'IT Service Management' ? 'selected' : '' }}>IT Service Management</option>
+            <option value="Inventory Management" {{ old('department', $step2['department'] ?? '') == 'Inventory Management' ? 'selected' : '' }}>Inventory Management</option>
+            <option value="Order Management" {{ old('department', $step2['department'] ?? '') == 'Order Management' ? 'selected' : '' }}>Order Management</option>
+            <option value="Procurement Management" {{ old('department', $step2['department'] ?? '') == 'Procurement Management' ? 'selected' : '' }}>Procurement Management</option>
+            <option value="Production Management" {{ old('department', $step2['department'] ?? '') == 'Production Management' ? 'selected' : '' }}>Production Management</option>
         </select>
+        @error('department')
+            <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- Position -->
@@ -92,6 +93,9 @@
         <select id="position" name="position" required class="w-[630px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500">
             <option value="">Select Department First</option>
         </select>
+        @error('position')
+            <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+        @enderror
     </div>
 
 </div>
@@ -108,9 +112,12 @@
         name="hire_date"
             type="date"
             required
-            value="{{ old('hire_date', session('step2.hire_date')) }}"
+            value="{{ old('hire_date', $step2['hire_date'] ?? '') }}"
             class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
+        @error('hire_date')
+            <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+        @enderror
     </div>
 
     <div>
@@ -121,9 +128,12 @@
             name="start_time"
             type="time"
             required
-            value="{{ old('start_time', session('step2.start_time')) }}"
+            value="{{ old('start_time', $step2['start_time'] ?? '') }}"
             class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
+        @error('start_time')
+            <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+        @enderror
         <p class="mt-1 text-[10px] text-slate-400">HR assigned work start (basis for late check)</p>
     </div>
 
@@ -135,9 +145,12 @@
             name="end_time"
             type="time"
             required
-            value="{{ old('end_time', session('step2.end_time')) }}"
+            value="{{ old('end_time', $step2['end_time'] ?? '') }}"
             class="w-[412px] h-[40px] bg-[#0d1730] text-white text-sm rounded px-3 outline-none focus:ring-1 focus:ring-blue-500"
         />
+        @error('end_time')
+            <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+        @enderror
         <p class="mt-1 text-[10px] text-slate-400">Required work hours = End Time − Start Time</p>
     </div>
 
@@ -198,7 +211,7 @@
 
     "Inventory Management": ["Inventory Manager", "Inventory Staff"],
 
-    "Order Management": ["Order Manager", "Order Staff"],
+    "Order Management": ["Order Manager", "Order Staff", "Delivery Rider"],
 
     "Procurement Management": ["Procurement Manager", "Procurement Staff"],
 
@@ -208,8 +221,7 @@
   const departmentSelect = document.getElementById("department");
   const positionSelect = document.getElementById("position");
 
-  departmentSelect.addEventListener("change", function () {
-    const selectedDepartment = this.value;
+  function populatePositions(selectedDepartment, selectedPosition = "") {
     const positions = positionsByDepartment[selectedDepartment] || [];
 
     positionSelect.innerHTML = "";
@@ -221,9 +233,25 @@
 
     positionSelect.appendChild(new Option("Select Position", ""));
     positions.forEach(function (position) {
-      positionSelect.appendChild(new Option(position, position));
+      const option = new Option(position, position);
+      if (selectedPosition && position === selectedPosition) {
+        option.selected = true;
+      }
+      positionSelect.appendChild(option);
     });
+  }
+
+  departmentSelect.addEventListener("change", function () {
+    populatePositions(this.value);
   });
+
+  const initialDepartment = @json(old('department', $step2['department'] ?? ''));
+  const initialPosition = @json(old('position', $step2['position'] ?? ''));
+
+  if (initialDepartment) {
+    departmentSelect.value = initialDepartment;
+    populatePositions(initialDepartment, initialPosition);
+  }
 </script>
 
 </body>

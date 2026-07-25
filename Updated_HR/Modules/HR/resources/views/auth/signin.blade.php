@@ -348,6 +348,7 @@
             <div class="form-col">
                 <div class="login-card">
                     <h1>Sign In</h1>
+
                     @if ($errors->any() || session('error'))
                         <div class="alert-error">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

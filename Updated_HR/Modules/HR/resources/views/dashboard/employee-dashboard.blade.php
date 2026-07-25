@@ -121,51 +121,83 @@ This dashboard provides a live overview of employee information and HR activitie
       <article class="tilt opacity-0 animate-cardIn [animation-delay:.15s] overflow-x-auto">
         <div class="flex flex-row gap-[50px] pt-[5.5px] pr-[px] pb-[5px] pl-[px] w-[1818px] max-w-none">
 
-          <!-- Total Employees -->
+          <!-- Weekly Working Hours -->
           <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-4 py-1.5 flex items-start justify-between">
             <div class="flex items-start gap-3">
               <div class="w-[39px] h-[39px] mt-0.5 rounded-xl grid place-items-center bg-white/[.05] shrink-0">
                 <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                  <circle cx="9" cy="10" r="3" stroke="#DCEBFF" stroke-width="1.8"/>
-                  <circle cx="16.3" cy="11.2" r="2.4" stroke="#DCEBFF" stroke-width="1.8"/>
-                  <path d="M4.8 18.4C6 15.8 7.9 14.7 10.1 14.7C12.3 14.7 14.1 15.8 15.3 18.4" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M15.4 18.2C16 16.8 17.2 16.1 18.4 16.1C19.5 16.1 20.4 16.5 21 17.4" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M5 12H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M9 6H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M9 18H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
               </div>
               <div>
-                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Total Employees</div>
+                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Weekly Working Hours</div>
                 <div class="flex items-end gap-2 mt-0">
-                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $employeeCount }}">0</div>
-                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">vs. last month</div>
+                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $weeklyWorkingHours ?? 0 }}">0</div>
+                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">hrs this week</div>
                 </div>
               </div>
             </div>
-            <div class="h-[18px] px-2.5 rounded-full inline-flex items-center justify-center text-[7px] font-extrabold bg-[#350808] text-red-500 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">-4.5%</div>
+            <div class="h-[18px] px-2.5 rounded-full inline-flex items-center justify-center text-[7px] font-extrabold bg-[#0f3d1f] text-emerald-300 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">Live total</div>
           </div>
 
-          
-          <!-- Total Employees -->
-          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-4 py-1.5 flex items-start justify-between">
+          <!-- Monthly Leave Overview -->
+          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-4 py-1.5 flex flex-col justify-between">
             <div class="flex items-start gap-3">
               <div class="w-[39px] h-[39px] mt-0.5 rounded-xl grid place-items-center bg-white/[.05] shrink-0">
                 <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                  <circle cx="9" cy="10" r="3" stroke="#DCEBFF" stroke-width="1.8"/>
-                  <circle cx="16.3" cy="11.2" r="2.4" stroke="#DCEBFF" stroke-width="1.8"/>
-                  <path d="M4.8 18.4C6 15.8 7.9 14.7 10.1 14.7C12.3 14.7 14.1 15.8 15.3 18.4" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M15.4 18.2C16 16.8 17.2 16.1 18.4 16.1C19.5 16.1 20.4 16.5 21 17.4" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M5 7H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M5 12H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M5 17H11" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
               </div>
               <div>
-                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Total Employees</div>
+                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Leave Requests</div>
                 <div class="flex items-end gap-2 mt-0">
-                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $employeeCount }}">0</div>
-                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">vs. last month</div>
+                  <div class="text-[22.2px] font-bold leading-none tracking-tight">{{ $leaveMonthlyRequests ?? 0 }}</div>
+                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">requested</div>
                 </div>
               </div>
             </div>
-            <div class="h-[18px] px-2.5 rounded-full inline-flex items-center justify-center text-[7px] font-extrabold bg-[#350808] text-red-500 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">-4.5%</div>
+            <div class="flex items-center justify-between mt-4">
+              <div class="text-[10.8px] text-[#93A9CC]">Approved this month</div>
+              <div class="text-[18px] font-bold text-white">{{ $leaveMonthlyApproved ?? 0 }}</div>
+            </div>
+            <div class="text-[10.8px] text-[#93A9CC] mt-2">Yearly approved: {{ $leaveYearlyApproved ?? 0 }}</div>
           </div>
          
+      </article>
+
+      <!-- Bar chart -->
+      <article class="tilt opacity-0 animate-cardIn [animation-delay:.32s] rounded-[30px] bg-[#1B3A6B] border border-white/[.05] p-6 overflow-hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-white text-[20px] font-semibold">Annual Working Hours Reports</h2>
+            <p class="text-[#93A9CC] text-[13px] mt-1">Monthly total hours based on logged attendance.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-[auto_1fr] gap-6 items-center">
+          <div class="w-[68px] text-[12px] text-[#93A9CC] uppercase tracking-[0.18em]">Hours</div>
+          <div class="space-y-4">
+            <div class="h-[255px] att-grid-lines w-full rounded-[28px] bg-[#132B52] p-5">
+              <div class="relative h-full flex items-end gap-4">
+                @foreach($workHoursByMonth ?? array_fill(1,12,0) as $month => $hours)
+                  <div class="relative flex flex-col items-center justify-end gap-2 h-full">
+                    <div class="w-[24px] rounded-t-[18px] bg-gradient-to-t from-accent to-[#5bb4ff] origin-bottom animate-growBar" style="height: calc({{ $hours }} / {{ $maxMonthHours }} * 100%); min-height: 4px;"></div>
+                    <span class="text-[11px] text-[#93A9CC]">{{ strtoupper(substr(DateTime::createFromFormat('!m', $month)->format('M'), 0, 3)) }}</span>
+                  </div>
+                @endforeach
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-3 text-[10px] text-[#6d8fb7]">
+              @foreach(range(1, 12) as $month)
+                <div class="col-span-1 text-center">{{ strtoupper(substr(DateTime::createFromFormat('!m', $month)->format('M'), 0, 3)) }}</div>
+              @endforeach
+            </div>
+          </div>
+        </div>
       </article>
 
       

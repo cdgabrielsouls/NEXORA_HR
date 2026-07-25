@@ -14,7 +14,7 @@
     $isLeave = request()->routeIs('reports-analytics.leave');
 
     $isEmployeeManagement = request()->routeIs('leave-management.*');
-$isLeaveManagement = request()->routeIs('leave-management.index');
+    $isLeaveManagement = request()->routeIs('leave-requests.index');
 @endphp
 
 <header class="w-full h-[150px] bg-[#132B52] flex items-center justify-between pl-[1px] pr-[5px] border-b border-white/5 shadow-[0_1px_0_rgba(255,255,255,.03)_inset] sticky top-0 z-[1000]">
@@ -79,7 +79,7 @@ $isLeaveManagement = request()->routeIs('leave-management.index');
                     </svg>
                 </a>
                 <div class="absolute top-[120%] left-1/2 -translate-x-1/2 translate-y-2.5 w-[220px] bg-[#132B52] rounded-[18px] shadow-[0_20px_45px_rgba(0,0,0,.25),inset_0_1px_0_rgba(21,21,21,.7)] p-2.5 opacity-0 invisible transition-all duration-300 z-[999] group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                 <a href="{{ route('leave-management.index') }}"
+                 <a href="{{ route('leave-requests.index') }}"
    class="{{ $dropLink }} {{ $isLeaveManagement ? $dropActive : '' }}">
     Leave Management
 </a>

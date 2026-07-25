@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class EmployeeOnboardingController extends Controller
@@ -24,28 +25,42 @@ class EmployeeOnboardingController extends Controller
     }
 
     public function storeStep1(Request $request)
-{
+    {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:employees,email',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'first_name.required' => 'First name is required.',
+            'last_name.required' => 'Last name is required.',
+            'email.required' => 'Email is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email is already in use.',
+        ]);
 
-    $request->validate([
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'email' => 'required|email|unique:employees,email',
-        'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+        if ($validator->fails()) {
+            $data = $request->except('_token', 'profile_picture');
+            session(['step1' => $data]);
 
-    $data = $request->except('profile_picture');
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-    if ($request->hasFile('profile_picture')) {
-        $imageName = time() . '.' . $request->file('profile_picture')->extension();
-        $request->file('profile_picture')->move(public_path('profile_pictures'), $imageName);
+        $data = $request->except('_token', 'profile_picture');
 
-        $data['profile_picture'] = $imageName;
+        if ($request->hasFile('profile_picture')) {
+            $imageName = time() . '.' . $request->file('profile_picture')->extension();
+            $request->file('profile_picture')->move(public_path('profile_pictures'), $imageName);
+
+            $data['profile_picture'] = $imageName;
+        }
+
+        session(['step1' => $data]);
+
+        return redirect()->route('onboarding.step2');
     }
-
-    session(['step1' => $data]);
-
-    return redirect()->route('onboarding.step2');
-}
 
     public function step2()
     {
@@ -54,7 +69,9 @@ class EmployeeOnboardingController extends Controller
                 ->with('error', 'Please complete step 1 first.');
         }
 
-        return view('employees.onboarding.step2');
+        $step2 = session('step2', []);
+
+        return view('employees.onboarding.step2', compact('step2'));
     }
 
     public function storeStep2(Request $request)
@@ -64,18 +81,36 @@ class EmployeeOnboardingController extends Controller
                 ->with('error', 'Please complete step 1 first.');
         }
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'department' => 'required|string',
             'position' => 'required|string',
             'hire_date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required',
+        ], [
+            'department.required' => 'Department is required.',
+            'position.required' => 'Position is required.',
+            'hire_date.required' => 'Hire date is required.',
+            'start_time.required' => 'Start time is required.',
+            'end_time.required' => 'End time is required.',
         ]);
+
+        if ($validator->fails()) {
+            session(['step2' => $request->except('_token')]);
+
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $validated = $validator->validated();
 
         $start = \Carbon\Carbon::parse($validated['start_time']);
         $end = \Carbon\Carbon::parse($validated['end_time']);
 
         if ($end->lte($start)) {
+            session(['step2' => $request->except('_token')]);
+
             return back()
                 ->withErrors(['end_time' => 'End Time must be after Start Time.'])
                 ->withInput();

@@ -68,12 +68,12 @@
                 </div>
                 <div class="grid grid-cols-4">
                     <div class="info-col px-5 py-4">
-                        <div class="text-[10.5px] font-semibold text-white mb-1">Eployee ID</div>
+                        <div class="text-[10.5px] font-semibold text-white mb-1">Employee ID</div>
                         <div class="text-[11.5px] text-[#93abd3]">{{ $employee->employee_id ?? 'EMP-10045' }}</div>
                     </div>
                     <div class="info-col px-5 py-4">
                         <div class="text-[10.5px] font-semibold text-white mb-1">Name</div>
-                        <div class="text-[11.5px] text-[#93abd3]">{{ $employee->name ?? 'Yohan Evidor' }}</div>
+                        <div class="text-[11.5px] text-[#93abd3]">{{ ($employee->first_name ?? '') . ' ' . ($employee->last_name ?? '') }}</div>
                     </div>
                     <div class="info-col px-5 py-4">
                         <div class="text-[10.5px] font-semibold text-white mb-1">Department</div>
@@ -101,17 +101,17 @@
                         <div class="text-[10.5px] font-semibold text-white mb-2">From</div>
                         <div class="flex items-center gap-2 text-[11.5px] text-white font-semibold">
                             <i class="fa-regular fa-calendar text-[10px] text-[#93abd3]"></i>
-                            {{ $leave->from_date ?? 'June 02, 2026' }}
+                            {{ \Carbon\Carbon::parse($leave->from_date)->format('M d, Y') }}
                         </div>
-                        <div class="text-[10px] text-[#6b84ad] mt-1">({{ $leave->from_day ?? 'Tuesday' }})</div>
+                        <div class="text-[10px] text-[#6b84ad] mt-1">({{ \Carbon\Carbon::parse($leave->from_date)->format('l') }})</div>
                     </div>
                     <div class="info-col px-5 py-4">
                         <div class="text-[10.5px] font-semibold text-white mb-2">To</div>
                         <div class="flex items-center gap-2 text-[11.5px] text-white font-semibold">
                             <i class="fa-regular fa-calendar text-[10px] text-[#93abd3]"></i>
-                            {{ $leave->to_date ?? 'June 06, 2026' }}
+                            {{ \Carbon\Carbon::parse($leave->to_date)->format('M d, Y') }}
                         </div>
-                        <div class="text-[10px] text-[#6b84ad] mt-1">({{ $leave->to_day ?? 'Saturday' }})</div>
+                        <div class="text-[10px] text-[#6b84ad] mt-1">({{ \Carbon\Carbon::parse($leave->to_date)->format('l') }})</div>
                     </div>
                     <div class="info-col px-5 py-4">
                         <div class="text-[10.5px] font-semibold text-white mb-1">Total</div>
@@ -199,7 +199,7 @@
             </div>
 
             <!-- HR REMARKS -->
-            <form method="POST" action="{{ route('reports-analytics.leave.review', $leave->id ?? 0) }}">
+            <form method="POST" action="{{ route('leave-requests.review', $leave->id ?? 0) }}">
                 @csrf
                 <div class="rounded-[12px] border border-white/[0.08] overflow-hidden">
                     <div class="section-header flex items-center gap-2 px-4 py-3">

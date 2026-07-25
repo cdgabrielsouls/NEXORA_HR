@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\ResolvesPerPage;
 use App\Http\Controllers\Concerns\RespondsWithAjaxList;
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 
 class ReportsAnalyticsController extends Controller
@@ -119,6 +120,42 @@ class ReportsAnalyticsController extends Controller
         );
     }
 
+    public function selfAttendance(Request $request)
+    {
+        $employeeId = session('employee_id');
+
+        if (! $employeeId) {
+            return redirect()->route('signin');
+        }
+
+        $employee = Employee::find($employeeId);
+
+        if (! $employee) {
+            return redirect()->route('signin');
+        }
+
+        $attendances = Attendance::where('employee_id', $employee->id)
+            ->orderByDesc('attendance_date')
+            ->orderByDesc('id')
+            ->paginate($this->perPage($request))
+            ->withQueryString();
+
+        $attendances->getCollection()->each(
+            fn (Attendance $row) => $row->setRelation('employee', $employee)
+        );
+
+        $allRecords = Attendance::where('employee_id', $employee->id)->get();
+
+        $stats = [
+            'present' => $allRecords->filter(fn (Attendance $row) => $row->displayStatus() === 'Present')->count(),
+            'absent' => $allRecords->filter(fn (Attendance $row) => $row->displayStatus() === 'Absent' && $row->status !== 'Leave')->count(),
+            'leave' => $allRecords->where('status', 'Leave')->count(),
+            'total' => $allRecords->count(),
+        ];
+
+        return view('reports-analytics.empAttendance', compact('employee', 'attendances', 'stats'));
+    }
+
     public function leave(Request $request)
     {
         $employees = Employee::query()
@@ -139,15 +176,34 @@ class ReportsAnalyticsController extends Controller
             ->paginate($this->perPage($request))
             ->withQueryString();
 
+        $leaveRequests = LeaveRequest::with('employee')
+            ->whereIn('status', ['approved', 'rejected'])
+            ->orderByDesc('id')
+            ->paginate($this->perPage($request))
+            ->withQueryString();
+
+        $approvedCount = LeaveRequest::where('status', 'approved')->count();
+        $rejectedCount = LeaveRequest::where('status', 'rejected')->count();
+        $totalReviewed = $approvedCount + $rejectedCount;
+        $reportsThisMonth = LeaveRequest::whereIn('status', ['approved', 'rejected'])
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+
         if ($this->wantsAjaxList($request)) {
             return $this->ajaxListResponse(
                 'reports-analytics.partials.leave-results',
-                compact('employees')
+                compact('employees', 'leaveRequests')
             );
         }
 
-        return view('reports-analytics.leave', compact('employees'));
-
-        
+        return view('reports-analytics.leave', compact(
+            'employees',
+            'leaveRequests',
+            'approvedCount',
+            'rejectedCount',
+            'totalReviewed',
+            'reportsThisMonth'
+        ));
     }
 }

@@ -22,6 +22,7 @@ class AuthController extends Controller
         'employee_logged_in' => true,
         'employee_role' => 'admin',
         'employee_name' => 'Administrator',
+        'employee_position' => 'Administrator',
     ]);
 
     return redirect()->route('dashboard');

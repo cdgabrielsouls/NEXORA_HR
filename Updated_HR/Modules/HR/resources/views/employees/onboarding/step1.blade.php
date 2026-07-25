@@ -44,6 +44,8 @@
 
 <div class="flex flex-col lg:flex-row gap-12">
 
+      @php $step1Data = $step1 ?? []; @endphp
+
       <form
     id="onboarding-step1-form"
     action="{{ route('onboarding.storeStep1') }}"
@@ -64,10 +66,8 @@
 @endif
 
 @if ($errors->any())
-    <div class="bg-red-500 text-white p-3 rounded">
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
+    <div class="mb-4 rounded bg-amber-500/10 border border-amber-400/40 text-amber-100 px-4 py-3 text-sm">
+        Please review the highlighted fields below.
     </div>
 @endif
 
@@ -81,8 +81,13 @@
      <input
     type="text"
     name="first_name"
+    value="{{ old('first_name', $step1Data['first_name'] ?? '') }}"
+    required
     class="name-field w-[220px] h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500"
       />
+    @error('first_name')
+        <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+    @enderror
     </div>
   </div>
 
@@ -92,6 +97,7 @@
     <div class="relative">
       <input
         type="text" name="middle_name"
+        value="{{ old('middle_name', $step1Data['middle_name'] ?? '') }}"
         class="name-field w-[220px] h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500"
       />
     </div>
@@ -103,8 +109,13 @@
     <div class="relative">
       <input
         type="text" name="last_name"
+        value="{{ old('last_name', $step1Data['last_name'] ?? '') }}"
+        required
         class="name-field w-[220px] h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500"
       />
+    @error('last_name')
+        <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+    @enderror
     </div>
   </div>
 
@@ -118,13 +129,13 @@
             class="w-full h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500 appearance-none"
         >
             <option class="hidden"></option>
-            <option value="Jr.">Jr.</option>
-            <option value="Sr.">Sr.</option>
-            <option value="II">II</option>
-            <option value="III">III</option>
-            <option value="IV">IV</option>
-            <option value="V">V</option>
-            <option value="NA">N/A</option>
+            <option value="Jr." {{ old('suffix', $step1Data['suffix'] ?? '') == 'Jr.' ? 'selected' : '' }}>Jr.</option>
+            <option value="Sr." {{ old('suffix', $step1Data['suffix'] ?? '') == 'Sr.' ? 'selected' : '' }}>Sr.</option>
+            <option value="II" {{ old('suffix', $step1Data['suffix'] ?? '') == 'II' ? 'selected' : '' }}>II</option>
+            <option value="III" {{ old('suffix', $step1Data['suffix'] ?? '') == 'III' ? 'selected' : '' }}>III</option>
+            <option value="IV" {{ old('suffix', $step1Data['suffix'] ?? '') == 'IV' ? 'selected' : '' }}>IV</option>
+            <option value="V" {{ old('suffix', $step1Data['suffix'] ?? '') == 'V' ? 'selected' : '' }}>V</option>
+            <option value="NA" {{ old('suffix', $step1Data['suffix'] ?? '') == 'NA' ? 'selected' : '' }}>N/A</option>
         </select>
 
         <!-- Dropdown Arrow -->
@@ -161,9 +172,9 @@
             class="w-full h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500 appearance-none"
         >
             <option class="hidden"></option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Prefer not to say</option>
+            <option value="Male" {{ old('gender', $step1Data['gender'] ?? '') == 'Male' ? 'selected' : '' }}>Male</option>
+            <option value="Female" {{ old('gender', $step1Data['gender'] ?? '') == 'Female' ? 'selected' : '' }}>Female</option>
+            <option value="Prefer not to say" {{ old('gender', $step1Data['gender'] ?? '') == 'Prefer not to say' ? 'selected' : '' }}>Prefer not to say</option>
         </select>
 
         <!-- Dropdown Arrow -->
@@ -193,9 +204,9 @@
             class="w-full h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 pr-8 outline-none focus:ring-1 focus:ring-blue-500 appearance-none"
         >
             <option class="hidden"></option>
-            <option>Single</option>
-            <option>Married</option>
-            <option>Widowed</option>
+            <option value="Single" {{ old('marital_status', $step1Data['marital_status'] ?? '') == 'Single' ? 'selected' : '' }}>Single</option>
+            <option value="Married" {{ old('marital_status', $step1Data['marital_status'] ?? '') == 'Married' ? 'selected' : '' }}>Married</option>
+            <option value="Widowed" {{ old('marital_status', $step1Data['marital_status'] ?? '') == 'Widowed' ? 'selected' : '' }}>Widowed</option>
         </select>
 
         <!-- Dropdown Arrow -->
@@ -217,7 +228,7 @@
     <label class="block text-slate-300 text-xs mb-1">Nationality</label>
     <div class="relative">
 
-      <input type="hidden" name="nationality" id="nationality_value" />
+      <input type="hidden" name="nationality" id="nationality_value" value="{{ old('nationality', $step1Data['nationality'] ?? '') }}" />
 
       <!-- Trigger button (looks like the other selects) -->
       <button
@@ -261,7 +272,7 @@
           <div>
             <label class="block text-slate-300 text-xs mb-1">Address</label>
             <div class="relative">
-              <input type="text"  name="address" class="w-[825px] bg-[#0d1730] text-white text-sm rounded px-3 py-2 pr-8 outline-none focus:ring-1 focus:ring-blue-500" />
+              <input type="text"  name="address" value="{{ old('address', $step1Data['address'] ?? '') }}" class="w-[825px] bg-[#0d1730] text-white text-sm rounded px-3 py-2 pr-8 outline-none focus:ring-1 focus:ring-blue-500" />
            
             </div>
           </div>
@@ -275,9 +286,13 @@
                     type="email"
                     name="email"
                     id="email"
+                    value="{{ old('email', $step1Data['email'] ?? '') }}"
                     maxlength="254"
+                    required
                     class="w-[540px] h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 py-2 pr-8 outline-none focus:ring-1 focus:ring-blue-500" />
-               
+                @error('email')
+                    <p class="mt-1 text-[11px] text-red-300">{{ $message }}</p>
+                @enderror
               </div>
             </div>
             <div>
@@ -297,6 +312,7 @@
         type="tel"
         name="phone"
         id="phone"
+        value="{{ old('phone', $step1Data['phone'] ?? '') }}"
         inputmode="numeric"
         class="w-[200px] h-[28px] bg-[#0d1730] text-white text-sm rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500" />
 
@@ -596,6 +612,7 @@ const nationalityTrigger = document.getElementById('nationality_trigger');
 const nationalityDisplay = document.getElementById('nationality_display');
 const nationalityDropdown = document.getElementById('nationality_dropdown');
 const nationalityValue = document.getElementById('nationality_value');
+const initialNationality = @json(old('nationality', $step1Data['nationality'] ?? ''));
 
 function renderNationalityOptions() {
     nationalityDropdown.innerHTML = nationalities.map(n => `
@@ -611,51 +628,30 @@ function renderNationalityOptions() {
 
     document.querySelectorAll('.nationality-option').forEach(option => {
         option.addEventListener('click', function () {
-    const name = this.dataset.name;
-    const code = this.dataset.code;
-    const dial = nationalities.find(n => n.name === name)?.dial || '+--';
+            const name = this.dataset.name;
+            const code = this.dataset.code;
+            const dial = nationalities.find(n => n.name === name)?.dial || '+--';
 
-    nationalityDisplay.innerHTML = `
-        <span class="fi fi-${code}"></span>
-        <span class="text-white">${name}</span>
-    `;
-    nationalityValue.value = name;
-    nationalityDropdown.classList.add('hidden');
+            nationalityDisplay.innerHTML = `
+                <span class="fi fi-${code}"></span>
+                <span class="text-white">${name}</span>
+            `;
+            nationalityValue.value = name;
+            nationalityDropdown.classList.add('hidden');
 
-    // Auto-update phone dial code
-   
-    document.getElementById('phone_code_text').textContent = dial;
-    document.getElementById('phone_code_text').classList.remove('text-slate-300');
-    document.getElementById('phone_code_text').classList.add('text-white');
+            document.getElementById('phone_code_text').textContent = dial;
+            document.getElementById('phone_code_text').classList.remove('text-slate-300');
+            document.getElementById('phone_code_text').classList.add('text-white');
 
-   option.addEventListener('click', function () {
-    const name = this.dataset.name;
-    const code = this.dataset.code;
-    const dial = nationalities.find(n => n.name === name)?.dial || '+--';
+            phoneInput.value = '';
+            phoneInput.setAttribute('maxlength', currentPhoneMaxLength());
 
-    nationalityDisplay.innerHTML = `
-        <span class="fi fi-${code}"></span>
-        <span class="text-white">${name}</span>
-    `;
-    nationalityValue.value = name;
-    nationalityDropdown.classList.add('hidden');
-
-    document.getElementById('phone_code_text').textContent = dial;
-    document.getElementById('phone_code_text').classList.remove('text-slate-300');
-    document.getElementById('phone_code_text').classList.add('text-white');
-
-    // NEW: clear phone number whenever nationality (and thus dial code) changes
-    phoneInput.value = '';
-    phoneInput.setAttribute('maxlength', currentPhoneMaxLength());
-
-    // NEW: re-trim phone number if it now exceeds the newly selected country's limit
-    const max = currentPhoneMaxLength();
-    if (phoneInput.value.length > max) {
-        phoneInput.value = phoneInput.value.slice(0, max);
-    }
-    phoneInput.setAttribute('maxlength', max);
-});
-});
+            const max = currentPhoneMaxLength();
+            if (phoneInput.value.length > max) {
+                phoneInput.value = phoneInput.value.slice(0, max);
+            }
+            phoneInput.setAttribute('maxlength', max);
+        });
     });
 }
 
@@ -671,6 +667,20 @@ document.addEventListener('click', function (e) {
 });
 
 renderNationalityOptions();
+
+if (initialNationality) {
+    const selectedNationality = nationalities.find(n => n.name === initialNationality);
+    if (selectedNationality) {
+        nationalityDisplay.innerHTML = `
+            <span class="fi fi-${selectedNationality.code}"></span>
+            <span class="text-white">${selectedNationality.name}</span>
+        `;
+        nationalityValue.value = selectedNationality.name;
+        document.getElementById('phone_code_text').textContent = selectedNationality.dial;
+        document.getElementById('phone_code_text').classList.remove('text-slate-300');
+        document.getElementById('phone_code_text').classList.add('text-white');
+    }
+}
 
 // Approximate max local-number digit lengths (excluding country/dial code) per country.
 // These are practical UI limits, not strict telecom validation.

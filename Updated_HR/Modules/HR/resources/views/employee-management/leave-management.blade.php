@@ -116,40 +116,60 @@
      
     </form>
 
-        @include('partials.per-page-filter', ['perPage' => $employees->perPage()])
+        @php
+            $paginator = isset($leaveRequests) ? $leaveRequests : ($employees ?? null);
+        @endphp
+        @include('partials.per-page-filter', ['perPage' => $paginator ? $paginator->perPage() : 10])
 </div>
 
 
-        <!-- Leave stats -->
-         <div class="grid grid-cols-2 gap-4 mt-4 mb-4">
+<!-- Leave stats -->
+<div class="grid grid-cols-3 gap-4 mt-6 mb-6">
 
-        <div class="mt-4 mb-1 w-full h-[142px] bg-[#0B1E3D] rounded-[20px] border border-white/[0.05] px-4 flex items-center gap-3">
-            <div class="w-[39px] h-[39px] rounded-xl bg-white/[.05] flex items-center justify-center flex-none">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12L11 14L15 10" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M7 4H14L18 8V19C18 20.1046 17.1046 21 16 21H7C5.89543 21 5 20.1046 5 19V6C5 4.89543 5.89543 4 7 4Z" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div>
-                <div class="text-[11.9px] text-[#E7F0FF]">Total Submitted Request</div>
-                <div class="text-[22.2px] font-bold leading-none mt-0.5 employee-counter" data-target="{{ $totalSubmitted ?? 0 }}">0</div>
-            </div>
+    <!-- Total Submitted Request -->
+    <div class="w-full h-[142px] bg-[#0B1E3D] rounded-[20px] border border-white/[0.08] px-6 flex items-center gap-4 transition-colors duration-200 hover:border-white/[0.15]">
+        <div class="w-[64px] h-[64px] rounded-2xl bg-[#3B82F6]/15 flex items-center justify-center flex-none">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                <path d="M9 12L11 14L15 10" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 4H14L18 8V19C18 20.1046 17.1046 21 16 21H7C5.89543 21 5 20.1046 5 19V6C5 4.89543 5.89543 4 7 4Z" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
+        <div class="flex flex-col justify-center">
+            <div class="text-[14px] font-medium text-[#93ABD3] tracking-wide uppercase mb-1">Total Submitted Request</div>
+            <div class="text-[32px] font-bold leading-none text-white employee-counter" data-target="{{ $totalSubmitted ?? 0 }}">0</div>
+        </div>
+    </div>
 
-        <div class="mt-4 mb-1 w-full h-[142px] bg-[#0B1E3D] rounded-[20px] border border-white/[0.05] px-4 flex items-center gap-3">
-            <div class="w-[39px] h-[39px] rounded-xl bg-[#F59E0B]/20 flex items-center justify-center flex-none">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8">
-                    <circle cx="12" cy="12" r="9" stroke="#F59E0B" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 7V12L15 14" stroke="#F59E0B" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div>
-                <div class="text-[11.9px] text-[#E7F0FF]">Pending</div>
-                <div class="text-[22.2px] font-bold leading-none mt-0.5 employee-counter" data-target="{{ $pendingCount ?? 0 }}">0</div>
-            </div>
+    <!-- Pending -->
+    <div class="w-full h-[142px] bg-[#0B1E3D] rounded-[20px] border border-white/[0.08] px-6 flex items-center gap-4 transition-colors duration-200 hover:border-white/[0.15]">
+        <div class="w-[64px] h-[64px] rounded-2xl bg-[#F59E0B]/15 flex items-center justify-center flex-none">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 7V12L15 14" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
+        <div class="flex flex-col justify-center">
+            <div class="text-[14px] font-medium text-[#93ABD3] tracking-wide uppercase mb-1">Pending</div>
+            <div class="text-[32px] font-bold leading-none text-white employee-counter" data-target="{{ $pendingCount ?? 0 }}">0</div>
+        </div>
+    </div>
 
+    <!-- Submitted Today -->
+    <div class="w-full h-[142px] bg-[#0B1E3D] rounded-[20px] border border-white/[0.08] px-6 flex items-center gap-4 transition-colors duration-200 hover:border-white/[0.15]">
+        <div class="w-[64px] h-[64px] rounded-2xl bg-[#22C55E]/15 flex items-center justify-center flex-none">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.8">
+                <path d="M8 7V3M16 7V3M4 11H20M6 5H18C19.1046 5 20 5.89543 20 7V19C20 20.1046 19.1046 20 18 20H6C4.89543 20 4 20.1046 4 19V7C4 5.89543 4.89543 5 6 5Z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
+        <div class="flex flex-col justify-center">
+            <div class="text-[14px] font-medium text-[#93ABD3] tracking-wide uppercase mb-1">Submitted Today</div>
+            <div class="text-[32px] font-bold leading-none text-white employee-counter" data-target="{{ $submittedToday ?? 0 }}">0</div>
+        </div>
+    </div>
+
+</div>
+
+    
 
         
         
@@ -161,30 +181,28 @@
         ========================== -->
 
        <!-- Header -->
-<div class="w-full h-[47px] mx-auto mb-3 grid grid-cols-[16%_11%_11%_10%_14%_10%_11%_9%_8%] bg-[#0B1E3D] border border-white/[0.15] rounded-[10px] overflow-hidden">
+<div class="w-full h-[47px] mx-auto mb-3 grid grid-cols-[24%_16%_14%_16%_18%_12%] bg-[#0B1E3D] border border-white/[0.15] rounded-[10px] overflow-hidden">
 
     <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Employee</div>
 
     <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Department</div>
 
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Leave Type</div>
+    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">File Date</div>
 
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Submitted</div>
-
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Leave Dates</div>
-
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Leave ID</div>
-
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Reviewed By</div>
+    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Reason</div>
 
     <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white border-r border-white/[0.15]">Status</div>
 
-    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white">Report</div>
+    <div class="px-[10px] py-[15px] text-center text-[11.9px] font-light uppercase tracking-wide text-white">Action</div>
 
 </div>
 
         <div data-ajax-list-results class="transition-opacity duration-200">
-            @include('reports-analytics.partials.leave-results')
+            @if(isset($leaveRequests))
+                @include('employee-management.partials.leave-requests-results')
+            @else
+                @include('reports-analytics.partials.leave-results')
+            @endif
         </div>
 
 </div>

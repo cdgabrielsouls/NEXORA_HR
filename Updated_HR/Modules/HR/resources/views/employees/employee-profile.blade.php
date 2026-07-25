@@ -48,13 +48,15 @@
                         <h3 class="text-[13px] font-normal text-[#D7E4FF] tracking-[.5px] mb-[7px] uppercase">PROFILE IMAGE</h3>
 
                         <div class="relative w-[100px] h-[100px] rounded-full bg-[#7FB3FF] flex justify-center items-center overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,.35)] cursor-not-allowed">
-                            <img id="editProfilePreview"
-                                 src=""
-                                 alt="Profile"
-                                 class="w-full h-full object-cover rounded-full hidden">
-
-                            <i id="editProfilePlaceholder"
-                               class="fa-solid fa-circle-user text-[120px] text-[#1C4176]"></i>
+                            @if(!empty($employee->profile_picture))
+                                <img id="editProfilePreview"
+                                     src="{{ asset('profile_pictures/' . $employee->profile_picture) }}"
+                                     alt="Profile"
+                                     class="w-full h-full object-cover rounded-full">
+                            @else
+                                <i id="editProfilePlaceholder"
+                                   class="fa-solid fa-circle-user text-[120px] text-[#1C4176]"></i>
+                            @endif
                         </div>
 
                         <input type="file"
@@ -73,7 +75,7 @@
                         <div class="flex gap-3.5 ml-[146px] w-full">
                             <div class="relative w-[210.4px]">
                                 <label class="absolute top-[3px] left-4 text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Hire Date</label>
-                                <input type="text" disabled value=""
+                                <input type="text" disabled value="{{ optional($employee->hire_date)->format('M d, Y') ?? '' }}"
                                     class="w-full h-10 box-border py-3 px-2.5 pt-3 pr-[38px] bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none cursor-not-allowed">
                             </div>
 
@@ -90,25 +92,25 @@
 
                         <div class="relative w-[220px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">First Name</label>
-                            <input name="first_name" id="first_name" value="" disabled
+                            <input name="first_name" id="first_name" value="{{ $employee->first_name ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
 
                         <div class="relative w-[220px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Middle Name</label>
-                            <input name="middle_name" id="middle_name" value="" disabled
+                            <input name="middle_name" id="middle_name" value="{{ $employee->middle_name ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
 
                         <div class="relative w-[220px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Last Name</label>
-                            <input name="last_name" id="last_name" value="" disabled
+                            <input name="last_name" id="last_name" value="{{ $employee->last_name ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
 
                         <div class="relative w-[120px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Suffix</label>
-                            <input type="text" name="suffix" id="suffix" value="None" disabled
+                            <input type="text" name="suffix" id="suffix" value="{{ $employee->suffix ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed">
                         </div>
 
@@ -119,13 +121,13 @@
 
                         <div class="relative w-[406px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Department</label>
-                            <input type="text" id="department" name="department" value="" disabled
+                            <input type="text" id="department" name="department" value="{{ $employee->department ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed">
                         </div>
 
                         <div class="relative w-[406px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Position</label>
-                            <input type="text" id="position" name="position" value="" disabled
+                            <input type="text" id="position" name="position" value="{{ $employee->position ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed">
                         </div>
                     </div>
@@ -135,19 +137,19 @@
 
                         <div class="relative w-[269px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Gender</label>
-                            <input type="text" name="gender" value="" disabled
+                            <input type="text" name="gender" value="{{ $employee->gender ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed">
                         </div>
 
                         <div class="relative w-[269px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Marital Status</label>
-                            <input type="text" name="marital_status" value="" disabled
+                            <input type="text" name="marital_status" value="{{ $employee->marital_status ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed">
                         </div>
 
                         <div class="relative w-[269px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Nationality</label>
-                            <input type="text" name="nationality" id="nationality" value="" disabled
+                            <input type="text" name="nationality" id="nationality" value="{{ $employee->nationality ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
 
@@ -158,7 +160,7 @@
                         <div class="relative w-[837px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Address</label>
                             <textarea name="address" id="address" rows="1" disabled
-                                class="w-full h-10 overflow-hidden box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none resize-none text-center flex items-center cursor-not-allowed"></textarea>
+                                class="w-full h-10 overflow-hidden box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none resize-none text-center flex items-center cursor-not-allowed">{{ $employee->address ?? '' }}</textarea>
                         </div>
                     </div>
 
@@ -168,7 +170,7 @@
 
                         <div class="relative w-[837px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Email Address</label>
-                            <input type="email" name="email" value="" disabled
+                            <input type="email" name="email" value="{{ $employee->company_email ?? $employee->email ?? '' }}" disabled
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
                     </div>
@@ -177,7 +179,7 @@
                     <div class="mb-[15px]">
                         <div class="relative w-[837px] pr-[430px]">
                             <label class="absolute top-[3px] left-[16.5px] text-[9px] font-semibold text-[#6B7280] pointer-events-none z-[2]">Phone Number</label>
-                            <input type="text" name="phone" id="phone" value="" disabled
+                            <input type="text" name="phone" id="phone" value="{{ $employee->phone ?? '' }}" disabled
                                 maxlength="11" inputmode="numeric" pattern="\d{11}"
                                 class="w-full h-10 box-border py-3 px-2.5 pt-3 bg-[#0B1E3D] text-white border-0 shadow-[0_4px_8px_rgba(0,0,0,.35)] rounded-[10px] text-[11px] outline-none text-center cursor-not-allowed placeholder:text-[#8FA6D8]">
                         </div>
