@@ -23,6 +23,7 @@ class EmployeeViewController extends Controller
         $month = $today->month;
 
         $weeklyWorkingMinutes = 0;
+        $weeklyWorkingDays = 0;
         $workHoursByMonth = array_fill(1, 12, 0.0);
         $leaveMonthlyRequests = 0;
         $leaveMonthlyApproved = 0;
@@ -30,12 +31,14 @@ class EmployeeViewController extends Controller
         $leaveYearlyApproved = 0;
 
         if ($employeeId) {
-            $weeklyWorkingMinutes = Attendance::where('employee_id', $employeeId)
+            $weeklyAttendances = Attendance::where('employee_id', $employeeId)
                 ->whereNotNull('time_in')
                 ->whereNotNull('time_out')
                 ->whereBetween('attendance_date', [$startOfWeek->toDateString(), $today->toDateString()])
-                ->get()
-                ->sum(fn (Attendance $attendance) => $attendance->elapsedWorkMinutes() ?? 0);
+                ->get();
+
+            $weeklyWorkingMinutes = $weeklyAttendances->sum(fn (Attendance $attendance) => $attendance->elapsedWorkMinutes() ?? 0);
+            $weeklyWorkingDays = $weeklyAttendances->count();
 
             foreach (range(1, 12) as $monthIndex) {
                 $monthMinutes = Attendance::where('employee_id', $employeeId)
@@ -77,6 +80,7 @@ class EmployeeViewController extends Controller
             'employeeCount',
             'isHr',
             'weeklyWorkingHours',
+            'weeklyWorkingDays',
             'workHoursByMonth',
             'maxMonthHours',
             'leaveMonthlyRequests',

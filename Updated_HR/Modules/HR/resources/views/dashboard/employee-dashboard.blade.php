@@ -117,56 +117,88 @@ This dashboard provides a live overview of employee information and HR activitie
         </div>
       </article>
 
-      <!-- Stats -->
+     <!-- Stats -->
       <article class="tilt opacity-0 animate-cardIn [animation-delay:.15s] overflow-x-auto">
         <div class="flex flex-row gap-[50px] pt-[5.5px] pr-[px] pb-[5px] pl-[px] w-[1818px] max-w-none">
 
-          <!-- Weekly Working Hours -->
-          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-4 py-1.5 flex items-start justify-between">
-            <div class="flex items-start gap-3">
-              <div class="w-[39px] h-[39px] mt-0.5 rounded-xl grid place-items-center bg-white/[.05] shrink-0">
-                <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                  <path d="M5 12H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M9 6H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M9 18H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div>
-                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Weekly Working Hours</div>
-                <div class="flex items-end gap-2 mt-0">
-                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $weeklyWorkingHours ?? 0 }}">0</div>
-                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">hrs this week</div>
+          <!-- Weekly DTR Overview -->
+          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-6 py-3 flex flex-col">
+            <div class="text-center text-white text-[25px] font-semibold tracking-wide mb-2">Weekly DTR Overview</div>
+            <div class="flex-1 grid grid-cols-2 divide-x divide-white/[.08]">
+
+              <div class="flex flex-col items-center justify-center gap-1.5">
+                <div class="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 shrink-0">
+                    <path d="M5 12H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M9 6H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M9 18H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-[13.9px] text-[#E7F0FF]">Weekly Working Hours</span>
+                </div>
+                <div class="flex items-end gap-2">
+                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ number_format((float) ($weeklyWorkingHours ?? 0), 1, '.', '') }}">0</div>
+                  <div class="text-[10.7px] text-[#93A9CC] -mt-px">hrs this week</div>
                 </div>
               </div>
+
+              <div class="flex flex-col items-center justify-center gap-1.5">
+                <div class="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 shrink-0">
+                    <rect x="4" y="5" width="16" height="15" rx="2" stroke="#DCEBFF" stroke-width="1.8"/>
+                    <path d="M4 9H20" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M8 3V6" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M16 3V6" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-[13.9px] text-[#E7F0FF]">Weekly Working Days</span>
+                </div>
+                <div class="flex items-end gap-2">
+                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ (int) ($weeklyWorkingDays ?? 0) }}">0</div>
+                  <div class="text-[10.7px] text-[#93A9CC] -mt-px">days this week</div>
+                </div>
+              </div>
+
             </div>
-            <div class="h-[18px] px-2.5 rounded-full inline-flex items-center justify-center text-[7px] font-extrabold bg-[#0f3d1f] text-emerald-300 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">Live total</div>
           </div>
 
-          <!-- Monthly Leave Overview -->
-          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-4 py-1.5 flex flex-col justify-between">
-            <div class="flex items-start gap-3">
-              <div class="w-[39px] h-[39px] mt-0.5 rounded-xl grid place-items-center bg-white/[.05] shrink-0">
-                <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                  <path d="M5 7H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M5 12H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M5 17H11" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div>
-                <div class="text-[11.9px] text-[#E7F0FF] mt-px">Leave Requests</div>
-                <div class="flex items-end gap-2 mt-0">
-                  <div class="text-[22.2px] font-bold leading-none tracking-tight">{{ $leaveMonthlyRequests ?? 0 }}</div>
-                  <div class="text-[8.7px] text-[#93A9CC] -mt-px">requested</div>
+          <!-- Yearly Leave Overview -->
+          <div class="w-[881px] shrink-0 h-[150px] rounded-[20px] bg-[#1B3A6B] border border-white/[.05] px-6 py-3 flex flex-col">
+            <div class="text-center text-white text-[25px] font-semibold tracking-wide mb-2">Yearly Leave Overview</div>
+            <div class="flex-1 grid grid-cols-2 divide-x divide-white/[.08]">
+
+              <div class="flex flex-col items-center justify-center gap-1.5">
+                <div class="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 shrink-0">
+                    <path d="M5 7H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 12H15" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 17H11" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-[13.9px] text-[#E7F0FF]">Monthly Leave Records</span>
+                </div>
+                <div class="flex items-end gap-2">
+                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $leaveMonthlyApproved ?? 0 }}">0</div>
+                  <div class="text-[10.7px] text-[#93A9CC] -mt-px">approved this month</div>
                 </div>
               </div>
+
+              <div class="flex flex-col items-center justify-center gap-1.5">
+                <div class="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 shrink-0">
+                    <path d="M12 3V21" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 8H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 16H19" stroke="#DCEBFF" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-[13.9px] text-[#E7F0FF]">Yearly Leave Records</span>
+                </div>
+                <div class="flex items-end gap-2">
+                  <div class="counter text-[22.2px] font-bold leading-none tracking-tight" data-target="{{ $leaveYearlyApproved ?? 0 }}">0</div>
+                  <div class="text-[10.7px] text-[#93A9CC] -mt-px">approved this year</div>
+                </div>
+              </div>
+
             </div>
-            <div class="flex items-center justify-between mt-4">
-              <div class="text-[10.8px] text-[#93A9CC]">Approved this month</div>
-              <div class="text-[18px] font-bold text-white">{{ $leaveMonthlyApproved ?? 0 }}</div>
-            </div>
-            <div class="text-[10.8px] text-[#93A9CC] mt-2">Yearly approved: {{ $leaveYearlyApproved ?? 0 }}</div>
           </div>
-         
+
+        </div>
       </article>
 
       <!-- Bar chart -->
@@ -227,13 +259,17 @@ This dashboard provides a live overview of employee information and HR activitie
       setTimeout(() => animateCounter(counter), 320 + index * 110);
     });
     function animateCounter(el){
-      const target = parseInt(el.dataset.target, 10);
+      const target = parseFloat(el.dataset.target || '0');
       const duration = 1450;
       const start = performance.now();
       function update(now){
         const progress = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.round(target * eased).toLocaleString();
+        const value = target * eased;
+        const displayValue = Number.isInteger(target)
+          ? Math.round(value).toLocaleString()
+          : value.toFixed(1).toLocaleString();
+        el.textContent = displayValue;
         if (progress < 1) requestAnimationFrame(update);
       }
       requestAnimationFrame(update);
